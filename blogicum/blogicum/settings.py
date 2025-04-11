@@ -120,9 +120,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
+
 handler403 = 'pages.views.permission_denied'
 handler404 = 'pages.views.page_not_found'
 handler500 = 'pages.views.server_error'
 
-MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

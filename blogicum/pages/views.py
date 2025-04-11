@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.http import HttpResponseForbidden
+from django.template import loader
 
-
-def csrf_failure(request, reason=''):
-    return render(request, 'pages/403csrf.html', status=403)
+def csrf_failure(request, reason=""):
+    template = loader.get_template('pages/403csrf.html')
+    return HttpResponseForbidden(template.render())
 
 
 def page_not_found(request, exception):
