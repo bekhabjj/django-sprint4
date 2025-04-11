@@ -125,4 +125,4 @@ class Comment(PublishedBaseModel):
     def __str__(self):
         return (f'Комментарий автора {self.author}'
                 f'к посту "{self.post}",'
-                f'текст: {self.text[:MAX_TEXT]}')   
+                f'текст: {self.text[:MAX_TEXT]}')
