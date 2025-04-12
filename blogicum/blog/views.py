@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
@@ -30,10 +31,13 @@ def category_posts(request, category_slug):
 
 
 def post_detail(request, post_id):
-
     post = get_object_or_404(Post, pk=post_id)
+
+    if not post.is_published and post.author != request.user:
+        raise Http404
+    
     comments = post.comments.all().order_by('created_at')
-    form = CommentForm()  # Добавьте форму в контекст
+    form = CommentForm()
     return render(request, 'blog/detail.html', {
         'post': post,
         'form': form,

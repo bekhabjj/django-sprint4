@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_bootstrap5',
-    # 'debug_toolbar',  # Исправлен отступ после #
+    # 'debug_toolbar',
 
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Отключено
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'blogicum.urls'
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'blogicum.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Оставлен один правильный вариант
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,9 +117,8 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
-# Обработчики ошибок
 handler403 = 'pages.views.permission_denied'
 handler404 = 'pages.views.page_not_found'
 handler500 = 'pages.views.server_error'

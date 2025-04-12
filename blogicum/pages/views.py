@@ -1,8 +1,13 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
 
 
 def csrf_failure(request, reason=""):
-    return render(request, 'pages/403csrf.html')
+    return HttpResponseForbidden(render(request, 'pages/403csrf.html'))
+
+
+def permission_denied(request, exception):
+    return render(request, 'pages/403.html', status=403)
 
 
 def page_not_found(request, exception):
@@ -11,7 +16,3 @@ def page_not_found(request, exception):
 
 def server_error(request):
     return render(request, 'pages/500.html', status=500)
-
-
-def permission_denied(request, exception):
-    return render(request, 'pages/403.html', status=403)
