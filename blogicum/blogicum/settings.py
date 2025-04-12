@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -35,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_bootstrap5',
-    #'debug_toolbar',
+    # 'debug_toolbar',  # Исправлен отступ после #
 
     'pages.apps.PagesConfig',
     'blog.apps.BlogConfig',
@@ -49,18 +50,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',  # Отключено
 ]
 
 ROOT_URLCONF = 'blogicum.urls'
 
-TEMPLATES_DIR = BASE_DIR / 'templates'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],  # Оставлен один правильный вариант
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,13 +96,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'ru-RU'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -122,6 +116,10 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Обработчики ошибок
 handler403 = 'pages.views.permission_denied'
 handler404 = 'pages.views.page_not_found'
 handler500 = 'pages.views.server_error'

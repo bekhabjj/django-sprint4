@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponseForbidden
-from django.template import loader
 
 
 def csrf_failure(request, reason=""):
