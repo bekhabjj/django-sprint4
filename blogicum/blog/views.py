@@ -35,7 +35,7 @@ def post_detail(request, post_id):
 
     if not post.is_published and post.author != request.user:
         raise Http404
-    
+
     comments = post.comments.all().order_by('created_at')
     form = CommentForm()
     return render(request, 'blog/detail.html', {
