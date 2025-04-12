@@ -4,8 +4,7 @@ from django.template import loader
 
 
 def csrf_failure(request, reason=""):
-    template = loader.get_template('pages/403csrf.html')
-    return HttpResponseForbidden(template.render())
+    return render(request, 'pages/403csrf.html')
 
 
 def page_not_found(request, exception):
@@ -14,3 +13,7 @@ def page_not_found(request, exception):
 
 def server_error(request):
     return render(request, 'pages/500.html', status=500)
+
+
+def permission_denied(request, exception):
+    return render(request, 'pages/403.html', status=403)

@@ -8,6 +8,7 @@ from blogicum import settings
 
 handler404 = 'pages.views.page_not_found'
 handler500 = 'pages.views.server_error'
+handler403 = 'pages.views.permission_denied'
 
 urlpatterns = [
     path('pages/', include('pages.urls', namespace='pages')),

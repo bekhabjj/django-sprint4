@@ -31,17 +31,14 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
 
-    post = get_object_or_404(Post, id=post_id)
-    if post.author != request.user:
-        post = get_object_or_404(query_post(), id=post_id)
-    comments = post.comments.order_by('created_at')
-    form = CommentForm()
-    context = {
+    post = get_object_or_404(Post, pk=post_id)
+    comments = post.comments.all().order_by('created_at')
+    form = CommentForm()  # Добавьте форму в контекст
+    return render(request, 'blog/detail.html', {
         'post': post,
         'form': form,
         'comments': comments
-    }
-    return render(request, 'blog/detail.html', context)
+    })
 
 
 @login_required
