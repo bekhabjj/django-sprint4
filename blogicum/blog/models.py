@@ -133,4 +133,3 @@ class Comment(PublishedBaseModel):
 
     def __str__(self):
         return f'Комментарий от {self.author} к посту {self.post.id}'
-
