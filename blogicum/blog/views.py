@@ -43,7 +43,11 @@ def post_detail(request, post_id):
     is_future_post = post.pub_date > current_time
     is_unpublished_post = not post.is_published
     is_unpublished_category = not post.category.is_published
-    is_restricted = is_future_post or is_unpublished_post or is_unpublished_category
+    is_restricted = (
+    is_future_post
+    or is_unpublished_post
+    or is_unpublished_category
+    )
 
     if is_restricted and post.author != request.user:
         raise Http404
