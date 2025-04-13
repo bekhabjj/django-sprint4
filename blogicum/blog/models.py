@@ -114,11 +114,11 @@ class Post(PublishedBaseModel):
 
     def is_visible_to(self, user):
         return (
-            user == self.author or
-            (
-                self.is_published and
-                self.category.is_published and
-                self.pub_date <= timezone.now()
+            user == self.author
+            or (
+                self.is_published
+                and self.category.is_published
+                and self.pub_date <= timezone.now()
             )
         )
 
