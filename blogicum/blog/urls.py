@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from blog import views
+from . import views
 
 app_name = 'blog'
 
@@ -28,5 +28,6 @@ urlpatterns = [
          views.category_posts,
          name='category_posts'),
     path('posts/', include(posts)),
+    path('profile/<slug:username>/', views.profile, name='profile'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
 ]
