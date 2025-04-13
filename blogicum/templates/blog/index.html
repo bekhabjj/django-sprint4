@@ -4,9 +4,9 @@
 {% endblock %}
 {% block content %}
   {% for post in page_obj %}
-  <article class="mb-5">
-    <h2>{{ post.title }}</h2>
-    <p>{{ post.text }}</p>
-    <p>Комментарии ({{ post.comment_count }})</p>
-  </article>
-{% endfor %}
+    <article class="mb-5">
+      {% include "includes/post_card.html" %}
+    </article>
+  {% endfor %}
+  {% include "includes/paginator.html" %}
+{% endblock %}

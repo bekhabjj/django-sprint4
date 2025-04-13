@@ -11,17 +11,11 @@ from blog.utils import posts_pagination, query_post
 
 
 def index(request):
-    posts = Post.objects.filter(
-        is_published=True,
-        pub_date__lte=timezone.now(),
-        category__is_published=True
-    ).annotate(comment_count=Count('comments'))
     return render(
         request,
         'blog/index.html',
-        {'page_obj': posts_pagination(request, posts)}
+        {'page_obj': posts_pagination(request, query_post())}
     )
-
 
 def category_posts(request, category_slug):
     category = get_object_or_404(
@@ -29,16 +23,15 @@ def category_posts(request, category_slug):
         slug=category_slug,
         is_published=True
     )
-    posts = category.posts.filter(
-        is_published=True,
-        pub_date__lte=timezone.now()
-    )
     return render(
         request,
         'blog/category.html',
         {
             'category': category,
-            'page_obj': posts_pagination(request, posts)
+            'page_obj': posts_pagination(
+                request,
+                query_post().filter(category=category)
+            )
         }
     )
 
@@ -109,16 +102,17 @@ def delete_post(request, post_id):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    if request.user == author:
-        posts = author.posts.all()
-    else:
-        posts = author.posts.filter(is_published=True)
+    queryset = author.posts.all()
+    
+    if request.user != author:
+        queryset = queryset.filter(is_published=True)
+    
     return render(
         request,
         'blog/profile.html',
         {
             'profile': author,
-            'page_obj': posts_pagination(request, posts)
+            'page_obj': posts_pagination(request, queryset)
         }
     )
 
