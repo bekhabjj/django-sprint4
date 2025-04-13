@@ -31,9 +31,7 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        (get_posts(apply_filters=False)
-         if request.user.is_authenticated
-         else get_posts()),
+        Post.objects.select_related('author', 'category'),
         pk=post_id
     )
 
@@ -58,7 +56,7 @@ def create_post(request):
         post = form.save(commit=False)
         post.author = request.user
         post.save()
-        return redirect('blog:profile')
+        return redirect('blog:profile', username=request.user.username)
     return render(request, 'blog/create.html', {'form': form})
 
 

@@ -28,5 +28,5 @@ urlpatterns = [
          views.category_posts,
          name='category_posts'),
     path('posts/', include(posts)),
-    path('profile/', include(profile)),
+    path('profile/<slug:username>/', views.profile, name='profile'),
 ]

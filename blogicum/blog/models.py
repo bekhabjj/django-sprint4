@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from blog.constants import MAX_LENGTH, MAX_WORDS_LENGTH
 
@@ -111,6 +112,16 @@ class Post(PublishedBaseModel):
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.pk])
 
+    def is_visible_to(self, user):
+        return (
+            user == self.author or
+            (
+                self.is_published and
+                self.category.is_published and
+                self.pub_date <= timezone.now()
+            )
+        )
+
 
 class Comment(PublishedBaseModel):
     post = models.ForeignKey(
@@ -124,6 +135,7 @@ class Comment(PublishedBaseModel):
         verbose_name='Автор'
     )
     text = models.TextField('Текст комментария')
+
 
     class Meta:
         default_related_name = 'comments'
