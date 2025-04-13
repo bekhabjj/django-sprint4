@@ -113,31 +113,27 @@ class Post(PublishedBaseModel):
 
 
 class Comment(models.Model):
-    text = models.TextField(verbose_name='Текст комментария')
+    post = models.ForeignKey(
+        'Post',
+        on_delete=models.CASCADE,
+        verbose_name='Пост',
+        related_name='comments'
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор'
     )
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        verbose_name='Пост'
-    )
+    text = models.TextField('Текст комментария')
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата добавления'
+        verbose_name='Дата создания'
     )
 
     class Meta:
-        default_related_name = 'comments'
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('created_at',)
 
     def __str__(self):
-        return (
-            f'Комментарий автора {self.author} '
-            f'к посту "{self.post.title[:MAX_TEXT]}", '
-            f'текст: {self.text[:MAX_TEXT]}'
-        )
+        return f'Комментарий от {self.author} к посту {self.post.id}'
