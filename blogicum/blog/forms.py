@@ -13,6 +13,7 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = '__all__'
         widgets = {
+            'author': forms.HiddenInput(),
             'pub_date': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'}
             )
