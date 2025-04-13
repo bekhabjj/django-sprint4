@@ -40,11 +40,11 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
     if (
-        (not post.is_published or not post.category.is_published) 
+        (not post.is_published or not post.category.is_published)
         and post.author != request.user
     ):
         raise Http404
-    
+
     return render(
         request,
         'blog/detail.html',
