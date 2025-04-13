@@ -24,7 +24,7 @@ profile = [
 
 urlpatterns = [
     path(
-        'profile/<slug:username>/',
+        'profile/<str:username>/',
         views.profile,
         name='profile'
     ),
