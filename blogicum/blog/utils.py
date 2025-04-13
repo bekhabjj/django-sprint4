@@ -27,7 +27,9 @@ def get_posts(
         )
 
     if with_comments_count:
-        posts = posts.annotate(comment_count=Count('comments')).order_by('-pub_date')
+        posts = posts.annotate(
+            comment_count=Count('comments')
+        ).order_by('-pub_date')
 
     if apply_default_ordering:
         return posts.order_by(*Post._meta.ordering)

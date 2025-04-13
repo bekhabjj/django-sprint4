@@ -31,7 +31,9 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        get_posts(apply_filters=False) if request.user.is_authenticated else get_posts(),
+        (get_posts(apply_filters=False) 
+         if request.user.is_authenticated 
+         else get_posts()),
         pk=post_id
     )
 
@@ -86,11 +88,18 @@ def delete_post(request, post_id):
     if request.method == 'POST':
         post.delete()
         return redirect('blog:index')
-    return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
+    return render(
+        request,
+        'blog/create.html',
+        {'form': PostForm(instance=post)}
+    )
 
 
 def profile(request, username=None):
-    user = get_object_or_404(get_user_model(), username=username or request.user.username)
+    user = get_object_or_404(
+        get_user_model(),
+        username=username or request.user.username
+    )
     posts = get_posts(
         user.posts.all(),
         apply_filters=request.user != user,
@@ -134,7 +143,11 @@ def edit_comment(request, post_id, comment_id):
     if form.is_valid():
         form.save()
         return redirect('blog:post_detail', post_id=post_id)
-    return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
+    return render(
+        request,
+        'blog/comment.html',
+        {'form': form, 'comment': comment}
+    )
 
 
 @login_required
