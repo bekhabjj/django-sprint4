@@ -11,9 +11,8 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = '__all__'
+        exclude = ('author',)
         widgets = {
-            'author': forms.HiddenInput(),
             'pub_date': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'}
             )

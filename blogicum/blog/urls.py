@@ -23,15 +23,15 @@ profile = [
 ]
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('category/<slug:category_slug>/',
-         views.category_posts,
-         name='category_posts'),
-    path('posts/', include(posts)),
     path(
         'profile/<slug:username>/',
         views.profile,
         name='profile'
     ),
+    path('', views.index, name='index'),
+    path('category/<slug:category_slug>/',
+         views.category_posts,
+         name='category_posts'),
+    path('posts/', include(posts)),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
 ]
