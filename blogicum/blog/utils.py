@@ -12,12 +12,16 @@ def posts_pagination(request, queryset, per_page=10):
 
 
 def query_post() -> QuerySet:
-    return Post.objects.filter(
-        is_published=True,
-        category__is_published=True,
-        pub_date__lte=timezone.now()
-    ).select_related('category', 'location', 'author').annotate(
-        comment_count=Count('comments')
+    return (
+        Post.objects
+        .filter(
+            is_published=True,
+            category__is_published=True,
+            pub_date__lte=timezone.now()
+        )
+        .select_related('category', 'location', 'author')
+        .annotate(comment_count=Count('comments'))
+        .order_by('-pub_date')
     )
 
 

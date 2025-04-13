@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
+from django.utils import timezone
 
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
@@ -38,9 +39,8 @@ def category_posts(request, category_slug):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
 
-    if not post.is_published:
-        if request.user != post.author:
-            raise Http404
+    if not post.is_published and post.author != request.user:
+        raise Http404
 
     return render(
         request,
@@ -104,10 +104,14 @@ def delete_post(request, post_id):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    queryset = author.posts.order.by('-pub_date')
+    queryset = author.posts.order_by('-pub_date')
 
     if request.user != author:
-        queryset = queryset.filter(is_published=True)
+        queryset = queryset.filter(
+            is_published=True,
+            pub_date__lte=timezone.now(),
+            category__is_published=True
+        )
 
     return render(
         request,
