@@ -40,7 +40,7 @@ def post_detail(request, post_id):
 
     if not post.is_published and post.author != request.user:
         raise Http404
-    
+
     return render(
         request,
         'blog/detail.html',
