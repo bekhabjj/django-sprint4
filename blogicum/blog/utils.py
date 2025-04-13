@@ -6,7 +6,7 @@ from blog.models import Post
 
 
 def posts_pagination(
-    request, 
+    request,
     posts_queryset,
     default_page: int = 1,
     per_page: int = 10
@@ -47,5 +47,5 @@ def get_posts_queryset(
 
     if apply_default_ordering:
         return queryset.order_by(*Post._meta.ordering)
-    
+
     return queryset

@@ -39,7 +39,7 @@ def post_detail(request, post_id):
         else Post.published.select_related('category', 'location'),
         pk=post_id
     )
-    
+
     if not post.is_published and post.author != request.user:
         raise Http404
 
@@ -59,7 +59,7 @@ def create_post(request):
     form = PostForm(request.POST or None, files=request.FILES or None)
     if not form.is_valid():
         return render(request, 'blog/create.html', {'form': form})
-    
+
     post = form.save(commit=False)
     post.author = request.user
     post.save()
@@ -71,11 +71,11 @@ def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id)
-    
+
     form = PostForm(request.POST or None, instance=post)
     if not form.is_valid():
         return render(request, 'blog/create.html', {'form': form})
-    
+
     form.save()
     return redirect('blog:post_detail', post_id)
 
@@ -85,11 +85,11 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id)
-    
+
     if request.method == 'POST':
         post.delete()
         return redirect('blog:index')
-    
+
     return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
 
 
@@ -110,7 +110,7 @@ def edit_profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
     if not form.is_valid():
         return render(request, 'blog/user.html', {'form': form})
-    
+
     form.save()
     return redirect('blog:profile', request.user)
 
@@ -119,13 +119,13 @@ def edit_profile(request):
 def add_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
-    
+
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post
         comment.author = request.user
         comment.save()
-    
+
     return redirect('blog:post_detail', post_id)
 
 
@@ -134,11 +134,11 @@ def edit_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('blog:post_detail', post_id)
-    
+
     form = CommentForm(request.POST or None, instance=comment)
     if not form.is_valid():
         return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
-    
+
     form.save()
     return redirect('blog:post_detail', post_id)
 
@@ -148,9 +148,9 @@ def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('blog:post_detail', post_id)
-    
+
     if request.method == 'POST':
         comment.delete()
         return redirect('blog:post_detail', post_id)
-    
+
     return render(request, 'blog/comment.html', {'comment': comment})

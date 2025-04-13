@@ -6,6 +6,7 @@ from blog.constants import MAX_LENGTH, MAX_TEXT, MAX_WORDS_LENGTH
 
 User = get_user_model()
 
+
 class PublishedBaseModel(models.Model):
     is_published = models.BooleanField(
         default=True,
@@ -20,6 +21,7 @@ class PublishedBaseModel(models.Model):
     class Meta:
         abstract = True
 
+
 class Category(PublishedBaseModel):
     title = models.CharField(
         max_length=MAX_LENGTH,
@@ -30,7 +32,10 @@ class Category(PublishedBaseModel):
     slug = models.SlugField(
         unique=True,
         verbose_name='Идентификатор',
-        help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        help_text = (
+            "Идентификатор страницы для URL; разрешены символы латиницы, "
+            "цифры, дефис и подчёркивание."
+        )
     )
 
     class Meta:
@@ -40,6 +45,7 @@ class Category(PublishedBaseModel):
 
     def __str__(self):
         return self.title[:MAX_WORDS_LENGTH]
+
 
 class Location(PublishedBaseModel):
     name = models.CharField(
@@ -55,12 +61,16 @@ class Location(PublishedBaseModel):
     def __str__(self):
         return self.name[:MAX_WORDS_LENGTH]
 
+
 class Post(PublishedBaseModel):
     title = models.CharField(max_length=MAX_LENGTH, verbose_name='Заголовок')
     text = models.TextField(verbose_name='Текст')
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
-        help_text='Если установить дату и время в будущем — можно делать отложенные публикации.'
+        help_text = (
+            "Если установить дату и время в будущем — можно делать "
+            "отложенные публикации."
+        )
     )
     author = models.ForeignKey(
         User,
@@ -97,6 +107,7 @@ class Post(PublishedBaseModel):
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.pk])
+
 
 class Comment(models.Model):
     text = models.TextField(verbose_name='Текст комментария')
