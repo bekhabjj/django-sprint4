@@ -25,7 +25,7 @@
       <div class="card-text" style="white-space: pre-line">{{ post.text|truncatewords:10 }}</div>
       <a href="{% url 'blog:post_detail' post.id %}" class="card-link">Читать полный текст</a>
       <a href="{% url 'blog:post_detail' post.id %}" class="card-link text-muted">
-        Комментарии ({{ post.comment_count }})
+        Комментарии ({{ post.comments.count }})
       </a>
     </div>
   </div>

@@ -9,6 +9,7 @@ from blog.utils import posts_pagination, query_post
 
 
 def index(request):
+    post_list = Post.objects.order_by('-pub_date')
     return render(
         request,
         'blog/index.html',
