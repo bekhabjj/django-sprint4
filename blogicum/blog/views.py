@@ -2,8 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
-from django.utils import timezone
-from django.db.models import Count
 
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
@@ -16,6 +14,7 @@ def index(request):
         'blog/index.html',
         {'page_obj': posts_pagination(request, query_post())}
     )
+
 
 def category_posts(request, category_slug):
     category = get_object_or_404(
@@ -103,10 +102,10 @@ def delete_post(request, post_id):
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     queryset = author.posts.all()
-    
+
     if request.user != author:
         queryset = queryset.filter(is_published=True)
-    
+
     return render(
         request,
         'blog/profile.html',
