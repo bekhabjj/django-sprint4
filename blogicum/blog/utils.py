@@ -31,5 +31,5 @@ def get_posts(
 
     if apply_default_ordering:
         return posts.order_by(*Post._meta.ordering)
-    
+
     return posts

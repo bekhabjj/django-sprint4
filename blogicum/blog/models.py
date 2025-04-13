@@ -6,6 +6,7 @@ from blog.constants import MAX_LENGTH, MAX_WORDS_LENGTH
 
 User = get_user_model()
 
+
 class PublishedBaseModel(models.Model):
     is_published = models.BooleanField(
         default=True,
@@ -19,6 +20,7 @@ class PublishedBaseModel(models.Model):
 
     class Meta:
         abstract = True
+
 
 class Category(PublishedBaseModel):
     title = models.CharField(
@@ -41,6 +43,7 @@ class Category(PublishedBaseModel):
     def __str__(self):
         return self.title[:MAX_WORDS_LENGTH]
 
+
 class Location(PublishedBaseModel):
     name = models.CharField(
         max_length=MAX_LENGTH,
@@ -54,6 +57,7 @@ class Location(PublishedBaseModel):
 
     def __str__(self):
         return self.name[:MAX_WORDS_LENGTH]
+
 
 class Post(PublishedBaseModel):
     title = models.CharField(
@@ -100,6 +104,7 @@ class Post(PublishedBaseModel):
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.pk])
+
 
 class Comment(PublishedBaseModel):
     post = models.ForeignKey(
