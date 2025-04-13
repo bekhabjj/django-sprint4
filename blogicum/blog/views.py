@@ -12,7 +12,12 @@ def index(request):
     return render(
         request,
         'blog/index.html',
-        {'page_obj': posts_pagination(request, query_post())}
+        {
+            'page_obj': posts_pagination(
+                request,
+                query_post()
+            )
+        }
     )
 
 
@@ -27,7 +32,10 @@ def category_posts(request, category_slug):
         'blog/category.html',
         {
             'category': category,
-            'page_obj': posts_pagination(request, query_post(manager=category.posts))
+            'page_obj': posts_pagination(
+                request,
+                query_post(manager=category.posts)
+            )
         }
     )
 
@@ -90,7 +98,11 @@ def delete_post(request, post_id):
         post.delete()
         return redirect('blog:index')
 
-    return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
+    return render(
+        request,
+        'blog/create.html',
+        {'form': PostForm(instance=post)}
+    )
 
 
 def profile(request, username):
@@ -100,7 +112,10 @@ def profile(request, username):
         'blog/profile.html',
         {
             'profile': author,
-            'page_obj': posts_pagination(request, query_post(manager=author.posts))
+            'page_obj': posts_pagination(
+                request,
+                query_post(manager=author.posts)
+            )
         }
     )
 
@@ -137,7 +152,11 @@ def edit_comment(request, post_id, comment_id):
 
     form = CommentForm(request.POST or None, instance=comment)
     if not form.is_valid():
-        return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
+        return render(
+            request,
+            'blog/comment.html',
+            {'form': form, 'comment': comment}
+        )
 
     form.save()
     return redirect('blog:post_detail', post_id)
@@ -153,4 +172,8 @@ def delete_comment(request, post_id, comment_id):
         comment.delete()
         return redirect('blog:post_detail', post_id)
 
-    return render(request, 'blog/comment.html', {'comment': comment})
+    return render(
+        request,
+        'blog/comment.html',
+        {'comment': comment}
+    )

@@ -32,7 +32,7 @@ class Category(PublishedBaseModel):
     slug = models.SlugField(
         unique=True,
         verbose_name='Идентификатор',
-        help_text = (
+        help_text=(
             "Идентификатор страницы для URL; разрешены символы латиницы, "
             "цифры, дефис и подчёркивание."
         )
@@ -63,11 +63,14 @@ class Location(PublishedBaseModel):
 
 
 class Post(PublishedBaseModel):
-    title = models.CharField(max_length=MAX_LENGTH, verbose_name='Заголовок')
+    title = models.CharField(
+        max_length=MAX_LENGTH,
+        verbose_name='Заголовок'
+    )
     text = models.TextField(verbose_name='Текст')
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
-        help_text = (
+        help_text=(
             "Если установить дату и время в будущем — можно делать "
             "отложенные публикации."
         )
@@ -133,6 +136,8 @@ class Comment(models.Model):
         ordering = ('created_at',)
 
     def __str__(self):
-        return (f'Комментарий автора {self.author} '
-                f'к посту "{self.post.title[:MAX_TEXT]}", '
-                f'текст: {self.text[:MAX_TEXT]}')
+        return (
+            f'Комментарий автора {self.author} '
+            f'к посту "{self.post.title[:MAX_TEXT]}", '
+            f'текст: {self.text[:MAX_TEXT]}'
+        )
