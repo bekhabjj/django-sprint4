@@ -9,139 +9,148 @@ from blog.utils import posts_pagination, query_post
 
 
 def index(request):
-
-    page_obj = posts_pagination(request, query_post())
-    context = {'page_obj': page_obj}
-    return render(request, 'blog/index.html', context)
+    return render(
+        request,
+        'blog/index.html',
+        {'page_obj': posts_pagination(request, query_post())}
+    )
 
 
 def category_posts(request, category_slug):
-
     category = get_object_or_404(
         Category,
         slug=category_slug,
-        is_published=True,
+        is_published=True
     )
-    page_obj = posts_pagination(
+    return render(
         request,
-        query_post(manager=category.posts)
+        'blog/category.html',
+        {
+            'category': category,
+            'page_obj': posts_pagination(request, query_post(manager=category.posts))
+        }
     )
-    context = {'category': category, 'page_obj': page_obj}
-    return render(request, 'blog/category.html', context)
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-
+    post = get_object_or_404(
+        Post.objects.select_related('author', 'category', 'location')
+        if request.user.is_authenticated
+        else Post.published.select_related('category', 'location'),
+        pk=post_id
+    )
+    
     if not post.is_published and post.author != request.user:
         raise Http404
 
-    comments = post.comments.all().order_by('created_at')
-    form = CommentForm()
-    return render(request, 'blog/detail.html', {
-        'post': post,
-        'form': form,
-        'comments': comments
-    })
+    return render(
+        request,
+        'blog/detail.html',
+        {
+            'post': post,
+            'form': CommentForm(),
+            'comments': post.comments.all()
+        }
+    )
 
 
 @login_required
 def create_post(request):
-
     form = PostForm(request.POST or None, files=request.FILES or None)
-    if form.is_valid():
-        post = form.save(commit=False)
-        post.author = request.user
-        post.save()
-        return redirect('blog:profile', request.user)
-    context = {'form': form}
-    return render(request, 'blog/create.html', context)
+    if not form.is_valid():
+        return render(request, 'blog/create.html', {'form': form})
+    
+    post = form.save(commit=False)
+    post.author = request.user
+    post.save()
+    return redirect('blog:profile', request.user)
 
 
 @login_required
 def edit_post(request, post_id):
-
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id)
+    
     form = PostForm(request.POST or None, instance=post)
-    if form.is_valid():
-        form.save()
-        return redirect('blog:post_detail', post_id)
-    context = {'form': form}
-    return render(request, 'blog/create.html', context)
+    if not form.is_valid():
+        return render(request, 'blog/create.html', {'form': form})
+    
+    form.save()
+    return redirect('blog:post_detail', post_id)
 
 
 @login_required
 def delete_post(request, post_id):
-
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id)
-    form = PostForm(request.POST or None, instance=post)
+    
     if request.method == 'POST':
         post.delete()
         return redirect('blog:index')
-    context = {'form': form}
-    return render(request, 'blog/create.html', context)
+    
+    return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
 
 
 def profile(request, username):
-
-    profile = get_object_or_404(User, username=username)
-    posts = query_post(manager=profile.posts, filters=profile != request.user)
-    page_obj = posts_pagination(request, posts)
-    context = {'profile': profile,
-               'page_obj': page_obj}
-    return render(request, 'blog/profile.html', context)
+    author = get_object_or_404(User, username=username)
+    return render(
+        request,
+        'blog/profile.html',
+        {
+            'profile': author,
+            'page_obj': posts_pagination(request, query_post(manager=author.posts))
+        }
+    )
 
 
 @login_required
 def edit_profile(request):
-
-    form = ProfileForm(request.POST, instance=request.user)
-    if form.is_valid():
-        form.save()
-        return redirect('blog:profile', request.user)
-    context = {'form': form}
-    return render(request, 'blog/user.html', context)
+    form = ProfileForm(request.POST or None, instance=request.user)
+    if not form.is_valid():
+        return render(request, 'blog/user.html', {'form': form})
+    
+    form.save()
+    return redirect('blog:profile', request.user)
 
 
 @login_required
 def add_comment(request, post_id):
-
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
+    
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post
         comment.author = request.user
         comment.save()
+    
     return redirect('blog:post_detail', post_id)
 
 
 @login_required
 def edit_comment(request, post_id, comment_id):
-
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('blog:post_detail', post_id)
+    
     form = CommentForm(request.POST or None, instance=comment)
-    if form.is_valid():
-        form.save()
-        return redirect('blog:post_detail', post_id)
-    context = {'form': form, 'comment': comment}
-    return render(request, 'blog/comment.html', context)
+    if not form.is_valid():
+        return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
+    
+    form.save()
+    return redirect('blog:post_detail', post_id)
 
 
 @login_required
 def delete_comment(request, post_id, comment_id):
-
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('blog:post_detail', post_id)
-    if request.method == "POST":
+    
+    if request.method == 'POST':
         comment.delete()
         return redirect('blog:post_detail', post_id)
-    context = {'comment': comment}
-    return render(request, 'blog/comment.html', context)
+    
+    return render(request, 'blog/comment.html', {'comment': comment})
