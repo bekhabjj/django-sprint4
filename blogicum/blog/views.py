@@ -48,7 +48,7 @@ def post_detail(request, post_id):
         {
             'post': post,
             'form': CommentForm(),
-            'comments': post.comments.filter(is_published=True)
+            'comments': post.comments.filter(is_published=True).order.by('created_at')
         }
     )
 
@@ -102,7 +102,7 @@ def delete_post(request, post_id):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    queryset = author.posts.all()
+    queryset = author.posts.order.by('-pub_date')
 
     if request.user != author:
         queryset = queryset.filter(is_published=True)
