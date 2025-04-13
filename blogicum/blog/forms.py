@@ -11,16 +11,18 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ('author',)
+        fields = '__all__'
         widgets = {
             'pub_date': forms.DateTimeInput(
                 attrs={'type': 'datetime-local'}
-            )
+            ),
+            'author': forms.HiddenInput()
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['author'].disabled = True
+        if 'author' in self.fields:
+            self.fields['author'].disabled = True
 
 
 class ProfileForm(forms.ModelForm):
