@@ -12,12 +12,7 @@ def index(request):
     return render(
         request,
         'blog/index.html',
-        {
-            'page_obj': posts_pagination(
-                request,
-                query_post()
-            )
-        }
+        {'page_obj': posts_pagination(request, query_post())}
     )
 
 
@@ -32,19 +27,14 @@ def category_posts(request, category_slug):
         'blog/category.html',
         {
             'category': category,
-            'page_obj': posts_pagination(
-                request,
-                query_post(manager=category.posts)
-            )
+            'page_obj': posts_pagination(request, category.posts.filter(is_published=True))
         }
     )
 
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        Post.objects.select_related('author', 'category', 'location')
-        if request.user.is_authenticated
-        else Post.published.select_related('category', 'location'),
+        query_post(),
         pk=post_id
     )
 
@@ -57,7 +47,7 @@ def post_detail(request, post_id):
         {
             'post': post,
             'form': CommentForm(),
-            'comments': post.comments.all()
+            'comments': post.comments.filter(is_published=True)
         }
     )
 
@@ -71,7 +61,7 @@ def create_post(request):
     post = form.save(commit=False)
     post.author = request.user
     post.save()
-    return redirect('blog:profile', request.user)
+    return redirect('blog:profile', request.user.username)
 
 
 @login_required
@@ -80,7 +70,7 @@ def edit_post(request, post_id):
     if request.user != post.author:
         return redirect('blog:post_detail', post_id)
 
-    form = PostForm(request.POST or None, instance=post)
+    form = PostForm(request.POST or None, instance=post, files=request.FILES or None)
     if not form.is_valid():
         return render(request, 'blog/create.html', {'form': form})
 
@@ -98,11 +88,7 @@ def delete_post(request, post_id):
         post.delete()
         return redirect('blog:index')
 
-    return render(
-        request,
-        'blog/create.html',
-        {'form': PostForm(instance=post)}
-    )
+    return render(request, 'blog/create.html', {'form': PostForm(instance=post)})
 
 
 def profile(request, username):
@@ -112,10 +98,7 @@ def profile(request, username):
         'blog/profile.html',
         {
             'profile': author,
-            'page_obj': posts_pagination(
-                request,
-                query_post(manager=author.posts)
-            )
+            'page_obj': posts_pagination(request, author.posts.filter(is_published=True))
         }
     )
 
@@ -127,7 +110,7 @@ def edit_profile(request):
         return render(request, 'blog/user.html', {'form': form})
 
     form.save()
-    return redirect('blog:profile', request.user)
+    return redirect('blog:profile', request.user.username)
 
 
 @login_required
@@ -152,11 +135,7 @@ def edit_comment(request, post_id, comment_id):
 
     form = CommentForm(request.POST or None, instance=comment)
     if not form.is_valid():
-        return render(
-            request,
-            'blog/comment.html',
-            {'form': form, 'comment': comment}
-        )
+        return render(request, 'blog/comment.html', {'form': form, 'comment': comment})
 
     form.save()
     return redirect('blog:post_detail', post_id)
@@ -172,8 +151,4 @@ def delete_comment(request, post_id, comment_id):
         comment.delete()
         return redirect('blog:post_detail', post_id)
 
-    return render(
-        request,
-        'blog/comment.html',
-        {'comment': comment}
-    )
+    return render(request, 'blog/comment.html', {'comment': comment})

@@ -112,7 +112,7 @@ class Post(PublishedBaseModel):
         return reverse('blog:post_detail', args=[self.pk])
 
 
-class Comment(models.Model):
+class Comment(PublishedBaseModel):
     post = models.ForeignKey(
         'Post',
         on_delete=models.CASCADE,
@@ -125,15 +125,12 @@ class Comment(models.Model):
         verbose_name='Автор'
     )
     text = models.TextField('Текст комментария')
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата создания'
-    )
 
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
 
     def __str__(self):
         return f'Комментарий от {self.author} к посту {self.post.id}'
+

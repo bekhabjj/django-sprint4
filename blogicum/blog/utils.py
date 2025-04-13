@@ -1,20 +1,20 @@
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from django.utils import timezone
 
 from blog.models import Post
 
+def posts_pagination(request, queryset, per_page=10):
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)
 
-def posts_pagination(
-    request,
-    posts_queryset,
-    default_page: int = 1,
-    per_page: int = 10
-):
-    """Пагинация постов с настраиваемыми параметрами."""
-    paginator = Paginator(posts_queryset, per_page)
-    return paginator.get_page(request.GET.get('page', default_page))
-
+def query_post() -> QuerySet:
+    return Post.objects.filter(
+        is_published=True,
+        category__is_published=True,
+        pub_date__lte=timezone.now()
+    ).select_related('category', 'location', 'author')
 
 def get_posts_queryset(
     base_queryset=Post.objects.all(),
@@ -23,13 +23,6 @@ def get_posts_queryset(
     use_select_related: bool = True,
     apply_default_ordering: bool = True
 ):
-    """
-    Формирование QuerySet для постов с гибкими параметрами:
-    - apply_filters: Применение фильтров публикации
-    - with_comments_count: Добавление количества комментариев
-    - use_select_related: Оптимизация запросов к связанным моделям
-    - apply_default_ordering: Сортировка по умолчанию из модели
-    """
     queryset = base_queryset
 
     if use_select_related:
