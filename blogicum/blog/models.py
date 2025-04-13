@@ -113,13 +113,12 @@ class Post(PublishedBaseModel):
         return reverse('blog:post_detail', args=[self.pk])
 
     def is_visible_to(self, user):
+        if user == self.author:
+            return True
         return (
-            user == self.author
-            or (
-                self.is_published
-                and self.category.is_published
-                and self.pub_date <= timezone.now()
-            )
+            self.is_published
+            and self.category.is_published
+            and self.pub_date <= timezone.now()
         )
 
 
