@@ -31,8 +31,8 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        (get_posts(apply_filters=False) 
-         if request.user.is_authenticated 
+        (get_posts(apply_filters=False)
+         if request.user.is_authenticated
          else get_posts()),
         pk=post_id
     )
