@@ -100,7 +100,10 @@ def profile(request, username=None):
     )
     posts = get_posts(
         user.posts.all(),
-        apply_filters=not request.user.is_authenticated or request.user != user,
+        apply_filters=(
+            not request.user.is_authenticated
+            or request.user != user
+        ),
         apply_default_ordering=False
     )
     return render(
