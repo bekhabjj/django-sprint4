@@ -38,11 +38,13 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
+    current_time = timezone.now()
 
-    if (
-        (not post.is_published or not post.category.is_published)
-        and post.author != request.user
-    ):
+    is_future_post = post.pub_date > current_time
+    is_unpublished = not post.is_published
+    is_restricted = (is_future_post or is_unpublished)
+
+    if is_restricted and post.author != request.user:
         raise Http404
 
     return render(
@@ -53,7 +55,8 @@ def post_detail(request, post_id):
             'form': CommentForm(),
             'comments': post.comments.filter(
                 is_published=True
-            ).order_by('created_at')
+            ).order_by('created_at'),
+            'current_time': current_time
         }
     )
 

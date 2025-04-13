@@ -3,39 +3,64 @@
   {{ post.title }} | {% if post.location and post.location.is_published %}{{ post.location.name }}{% else %}Планета Земля{% endif %} |
   {{ post.pub_date|date:"d E Y" }}
 {% endblock %}
+
 {% block content %}
   <div class="col d-flex justify-content-center">
     <div class="card" style="width: 40rem;">
       <div class="card-body">
         {% if post.image %}
           <a href="{{ post.image.url }}" target="_blank">
-            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ post.image.url }}">
+            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" 
+                 src="{{ post.image.url }}" 
+                 alt="Изображение поста {{ post.title }}">
           </a>
         {% endif %}
+        
         <h5 class="card-title">{{ post.title }}</h5>
+        
         <h6 class="card-subtitle mb-2 text-muted">
           <small>
-            {% if not post.is_published %}
-              <p class="text-danger">Пост снят с публикации админом</p>
+            {% if post.pub_date > current_time %}
+              <div class="alert alert-warning mb-2">
+                ⏳ Это отложенная публикация. Доступна с {{ post.pub_date|date:"d E Y, H:i" }}
+              </div>
+            {% elif not post.is_published %}
+              <p class="text-danger">❌ Пост снят с публикации</p>
             {% elif not post.category.is_published %}
-              <p class="text-danger">Выбранная категория снята с публикации админом</p>
+              <p class="text-danger">⛔ Категория снята с публикации</p>
             {% endif %}
-            {{ post.pub_date|date:"d E Y, H:i" }} | {% if post.location and post.location.is_published %}{{ post.location.name }}{% else %}Планета Земля{% endif %}<br>
-            От автора <a class="text-muted" href="{% url 'blog:profile' post.author.username %}">@{{ post.author.username }}</a> в
-            категории {% include "includes/category_link.html" %}
+            
+            {{ post.pub_date|date:"d E Y, H:i" }} | 
+            {% if post.location and post.location.is_published %}
+              {{ post.location.name }}
+            {% else %}Планета Земля{% endif %}<br>
+            
+            От автора 
+            <a class="text-muted" 
+               href="{% url 'blog:profile' post.author.username %}">
+              @{{ post.author.username }}
+            </a> в категории 
+            {% include "includes/category_link.html" %}
           </small>
         </h6>
+
         <p class="card-text">{{ post.text|linebreaksbr }}</p>
+
         {% if user == post.author %}
           <div class="mb-2">
-            <a class="btn btn-sm text-muted" href="{% url 'blog:edit_post' post.id %}" role="button">
-              Отредактировать публикацию
+            <a class="btn btn-sm text-muted" 
+               href="{% url 'blog:edit_post' post.id %}" 
+               role="button">
+              ✏️ Редактировать
             </a>
-            <a class="btn btn-sm text-muted" href="{% url 'blog:delete_post' post.id %}" role="button">
-              Удалить публикацию
+            <a class="btn btn-sm text-muted" 
+               href="{% url 'blog:delete_post' post.id %}" 
+               role="button">
+              🗑️ Удалить
             </a>
           </div>
         {% endif %}
+
         {% include "includes/comments.html" %}
       </div>
     </div>
