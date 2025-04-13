@@ -44,11 +44,13 @@ def post_detail(request, post_id):
 
     return render(
         request,
-        'blog/detail.html',
+         'blog/detail.html',
         {
             'post': post,
             'form': CommentForm(),
-            'comments': post.comments.filter(is_published=True).order.by('created_at')
+            'comments': post.comments.filter(
+                is_published=True
+            ).order_by('created_at')
         }
     )
 
