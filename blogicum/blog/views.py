@@ -36,10 +36,11 @@ def category_posts(request, category_slug):
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(query_post(), pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
 
-    if not post.is_published and post.author != request.user:
-        raise Http404
+    if not post.is_published:
+        if request.user != post.author:
+            raise Http404
 
     return render(
         request,
