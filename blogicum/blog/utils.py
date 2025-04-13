@@ -16,7 +16,9 @@ def query_post() -> QuerySet:
         is_published=True,
         category__is_published=True,
         pub_date__lte=timezone.now()
-    ).select_related('category', 'location', 'author')
+    ).select_related('category', 'location', 'author').annotate(
+        comment_count=Count('comments')
+    )
 
 
 def get_posts_queryset(
