@@ -136,7 +136,6 @@ class Comment(PublishedBaseModel):
     )
     text = models.TextField('Текст комментария')
 
-
     class Meta:
         default_related_name = 'comments'
         verbose_name = 'комментарий'
