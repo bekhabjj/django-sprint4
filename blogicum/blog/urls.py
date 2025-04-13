@@ -23,11 +23,7 @@ profile = [
 ]
 
 urlpatterns = [
-    path(
-        'profile/<str:username>/',
-        views.profile,
-        name='profile'
-    ),
+    path('profile/<str:username>/', views.profile, name='profile'),
     path('', views.index, name='index'),
     path('category/<slug:category_slug>/',
          views.category_posts,
