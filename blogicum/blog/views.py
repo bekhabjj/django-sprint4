@@ -116,7 +116,7 @@ def profile(request, username=None):
 
 
 @login_required
-def edit_profile(request):
+def edit_profile(request, username=None):
     form = ProfileForm(request.POST or None, instance=request.user)
     if form.is_valid():
         form.save()
