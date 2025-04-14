@@ -44,7 +44,7 @@ def post_detail(request, post_id):
         {
             'post': post,
             'form': CommentForm(),
-            'comments': post.comments.all()
+            'comments': post.comments.order_by('created_at')
         }
     )
 
@@ -95,28 +95,24 @@ def delete_post(request, post_id):
 
 
 def profile(request, username=None):
-    author = get_object_or_404(
+    user = get_object_or_404(
         get_user_model(),
         username=username or request.user.username
+    )
+    posts = get_posts(
+        user.posts.all(),
+        apply_filters=request.user != user,
+        apply_default_ordering=False
     )
     return render(
         request,
         'blog/profile.html',
-        {
-            'profile': author,
-            'page_obj': posts_pagination(
-                request,
-                get_posts(
-                    author.posts.all(),
-                    apply_filters=(request.user != author)
-                )
-            )
-        }
+        {'profile': user, 'page_obj': posts_pagination(request, posts)}
     )
 
 
 @login_required
-def edit_profile(request, username=None):
+def edit_profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
     if form.is_valid():
         form.save()
