@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from blog.forms import CommentForm, PostForm, ProfileForm
@@ -37,7 +38,7 @@ def post_detail(request, post_id):
     return render(request, "blog/detail.html", {
         "post": post,
         "form": CommentForm(),
-        "comments": post.comments,
+        "comments": post.comments.all(),
     })
 
 
