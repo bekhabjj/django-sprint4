@@ -76,7 +76,11 @@ def delete_post(request, post_id):
     if request.method == "POST":
         post.delete()
         return redirect("blog:index")
-    return render(request, "blog/create.html", {"form": PostForm(instance=post)})
+    return render(
+        request,
+        "blog/create.html",
+        {"form": PostForm(instance=post)},
+    )
 
 
 def profile(request, username=None):
