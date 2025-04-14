@@ -13,7 +13,8 @@ def get_posts(
     posts=Post.objects.all(),
     apply_filters: bool = True,
     with_comments_count: bool = True,
-    use_select_related: bool = True
+    use_select_related: bool = True,
+    apply_default_ordering: bool = True
 ):
     if use_select_related:
         posts = posts.select_related('author', 'location', 'category')
@@ -28,6 +29,7 @@ def get_posts(
     if with_comments_count:
         posts = posts.annotate(
             comment_count=Count('comments')
-        ).order_by(*Post._meta.ordering)
-
+        )
+    if apply_default_ordering:
+        posts = posts.order_by(*Post._meta.ordering)
     return posts

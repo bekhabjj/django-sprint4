@@ -35,7 +35,7 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     post = get_object_or_404(
-        get_posts(Post.objects.all()),
+        Post.objects.select_related('author', 'category'),
         pk=post_id
     )
     return render(
@@ -101,7 +101,7 @@ def profile(request, username=None):
     )
     posts = get_posts(
         user.posts.all(),
-        apply_filters=request.user != user,
+        apply_filters=(request.user != user),
         apply_default_ordering=False
     )
     return render(
