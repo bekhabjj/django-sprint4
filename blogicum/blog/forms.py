@@ -18,11 +18,6 @@ class PostForm(forms.ModelForm):
             )
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if 'author' in self.fields:
-            self.fields['author'].disabled = True
-
 
 class ProfileForm(forms.ModelForm):
     class Meta:

@@ -112,15 +112,6 @@ class Post(PublishedBaseModel):
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.pk])
 
-    def is_visible_to(self, user):
-        if user == self.author:
-            return True
-        return (
-            self.is_published
-            and self.category.is_published
-            and self.pub_date <= timezone.now()
-        )
-
 
 class Comment(PublishedBaseModel):
     post = models.ForeignKey(
