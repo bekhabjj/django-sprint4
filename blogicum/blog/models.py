@@ -1,8 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
 from blog.constants import MAX_LENGTH, MAX_WORDS_LENGTH
+
+User = get_user_model()
 
 
 class PublishedBaseModel(models.Model):
