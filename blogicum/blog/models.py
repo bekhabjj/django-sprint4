@@ -133,6 +133,3 @@ class Comment(PublishedBaseModel):
 
     def __str__(self):
         return f'Комментарий {self.text[:MAX_WORDS_LENGTH]} от {self.author}'
-
-
-__all__ = ['PublishedBaseModel', 'Category', 'Location', 'Post', 'Comment']

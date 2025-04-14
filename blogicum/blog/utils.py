@@ -18,18 +18,13 @@ def get_posts(
 ):
     if use_select_related:
         posts = posts.select_related('author', 'location', 'category')
-
     if apply_filters:
         posts = posts.filter(
             is_published=True,
             pub_date__lt=timezone.now(),
             category__is_published=True
         )
-
     if with_comments_count:
-        posts = posts.annotate(
-            comment_count=Count('comments')
-        )
-    if apply_default_ordering:
-        posts = posts.order_by(*Post._meta.ordering)
+        posts = posts.annotate(comment_count=Count('comments'))
+    posts = posts.order_by(*Post._meta.ordering)
     return posts
