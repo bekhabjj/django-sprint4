@@ -35,9 +35,5 @@ urlpatterns = [
         views.profile,
         name='profile'
     ),
-    path(
-        'profile/<str:username>/edit/',
-        views.edit_profile,
-        name='edit_profile'
-    ),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
 ]
