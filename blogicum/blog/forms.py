@@ -1,6 +1,5 @@
 from django import forms
-from yourapp.models import CustomUser
-from blog.models import Comment, Post
+from blog.models import Comment, Post, User
 
 
 class CommentForm(forms.ModelForm):
@@ -20,5 +19,5 @@ class PostForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['username', 'first_name', 'last_name', 'email']
