@@ -71,8 +71,8 @@ class Post(PublishedBaseModel):
     pub_date = models.DateTimeField(
         verbose_name="Дата и время публикации",
         help_text=(
-            "Если установить дату и время в будущем — "
-            "можно делать отложенные публикации."
+            "Если установить дату и время в будущем — можно делать "
+            "отложенные публикации."
         ),
     )
     author = models.ForeignKey(
@@ -133,13 +133,3 @@ class Comment(PublishedBaseModel):
 
     def __str__(self):
         return f'Комментарий {self.text[:MAX_WORDS_LENGTH]} от {self.author}'
-
-
-__all__ = [
-    "PublishedBaseModel",
-    "Category",
-    "Location",
-    "Post",
-    "Comment",
-    "User",
-]
