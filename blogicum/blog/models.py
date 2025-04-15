@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 
 from blog.constants import MAX_LENGTH, MAX_WORDS_LENGTH
 
@@ -127,11 +126,11 @@ class Comment(PublishedBaseModel):
     text = models.TextField("Текст комментария")
 
 
-    class Meta:
-        default_related_name = "comments"
-        verbose_name = "комментарий"
-        verbose_name_plural = "Комментарии"
-        ordering = ("-created_at",)
+class Meta:
+    default_related_name = "comments"
+    verbose_name = "комментарий"
+    verbose_name_plural = "Комментарии"
+    ordering = ("-created_at",)
 
     def __str__(self):
         return f'Комментарий {self.text[:MAX_WORDS_LENGTH]} от {self.author}'

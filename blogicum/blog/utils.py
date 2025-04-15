@@ -3,8 +3,10 @@ from django.db.models import Count
 from django.utils import timezone
 from blog.models import Post
 
+
 def posts_pagination(request, queryset, per_page=10):
     return Paginator(queryset, per_page).get_page(request.GET.get('page'))
+
 
 def get_posts(
     posts=Post.objects.all(),

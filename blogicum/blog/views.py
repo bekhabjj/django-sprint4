@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
 from blog.utils import get_posts, posts_pagination
+
 
 def index(request):
     return render(
@@ -12,6 +12,7 @@ def index(request):
         "blog/index.html",
         {"page_obj": posts_pagination(request, get_posts())},
     )
+
 
 def category_posts(request, category_slug):
     category = get_object_or_404(
@@ -26,6 +27,7 @@ def category_posts(request, category_slug):
         ),
     })
 
+
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.author:
@@ -37,6 +39,7 @@ def post_detail(request, post_id):
         "comments": post.comments.all(),
     })
 
+
 @login_required
 def create_post(request):
     form = PostForm(request.POST or None, files=request.FILES or None)
@@ -46,6 +49,7 @@ def create_post(request):
     post.author = request.user
     post.save()
     return redirect("blog:profile", username=request.user.username)
+
 
 @login_required
 def edit_post(request, post_id):
@@ -62,6 +66,7 @@ def edit_post(request, post_id):
         return redirect("blog:post_detail", post_id)
     return render(request, "blog/create.html", {"form": form})
 
+
 @login_required
 def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -75,6 +80,7 @@ def delete_post(request, post_id):
         "blog/create.html",
         {"form": PostForm(instance=post)},
     )
+
 
 def profile(request, username=None):
     author = get_object_or_404(
@@ -90,6 +96,7 @@ def profile(request, username=None):
         "page_obj": posts_pagination(request, posts),
     })
 
+
 @login_required
 def edit_profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
@@ -97,6 +104,7 @@ def edit_profile(request):
         form.save()
         return redirect('blog:profile', username=request.user.username)
     return render(request, "blog/user.html", {"form": form})
+
 
 @login_required
 def add_comment(request, post_id):
@@ -107,6 +115,7 @@ def add_comment(request, post_id):
         comment.author = request.user
         comment.save()
     return redirect("blog:post_detail", post_id)
+
 
 @login_required
 def edit_comment(request, post_id, comment_id):
@@ -121,6 +130,7 @@ def edit_comment(request, post_id, comment_id):
         "form": form,
         "comment": comment,
     })
+
 
 @login_required
 def delete_comment(request, post_id, comment_id):
