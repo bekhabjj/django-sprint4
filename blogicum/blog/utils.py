@@ -14,6 +14,7 @@ def get_posts(
     with_comments_count: bool = True,
     use_select_related: bool = True,
 ):
+    posts = posts.order_by(*Post._meta.ordering)
     if use_select_related:
         posts = posts.select_related('author', 'location', 'category')
     if apply_filters:

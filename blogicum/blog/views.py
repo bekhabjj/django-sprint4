@@ -88,7 +88,7 @@ def profile(request, username=None):
         username=username or request.user.username,
     )
     posts = get_posts(
-        author.posts.all(),
+        author.posts.all().order_by(*Post._meta.ordering),
         apply_filters=(request.user != author),
     )
     return render(request, "blog/profile.html", {
@@ -99,7 +99,11 @@ def profile(request, username=None):
 
 @login_required
 def edit_profile(request):
-    form = ProfileForm(request.POST or None, instance=request.user)
+    form = ProfileForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=request.user
+    )
     if form.is_valid():
         form.save()
         return redirect('blog:profile', username=request.user.username)
