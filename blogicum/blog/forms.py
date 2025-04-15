@@ -29,4 +29,3 @@ class ProfileForm(forms.ModelForm):
             'last_name': 'Фамилия',
             'email': 'Электронная почта'
         }
-
