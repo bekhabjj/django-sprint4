@@ -1,5 +1,5 @@
 from django import forms
-from blog.models import Comment, Post, User
+from blog.models import Comment, Post, UserProfile
 
 
 class CommentForm(forms.ModelForm):
@@ -19,5 +19,5 @@ class PostForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        model = UserProfile
+        fields = ['avatar']

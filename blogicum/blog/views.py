@@ -100,8 +100,8 @@ def profile(request, username=None):
 @login_required
 def edit_profile(request):
     form = ProfileForm(
-        request.POST or None,
-        request.FILES or None,
+        data=request.POST or None,
+        files=request.FILES or None,
         instance=request.user
     )
     if form.is_valid():
