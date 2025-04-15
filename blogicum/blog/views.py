@@ -33,8 +33,8 @@ def category_posts(request, category_slug):
 
 def post_detail(request, post_id):
     qs = Post.objects.select_related("author", "category").filter(
-        Q(author=request.user) |
-        Q(is_published=True, pub_date__lte=timezone.now())
+        Q(author=request.user)
+        | Q(is_published=True, pub_date__lte=timezone.now())
     )
     post = get_object_or_404(qs, pk=post_id)
     return render(request, "blog/detail.html", {
@@ -42,6 +42,7 @@ def post_detail(request, post_id):
         "form": CommentForm(),
         "comments": post.comments.order_by("created_at"),
     })
+
 
 @login_required
 def create_post(request):
