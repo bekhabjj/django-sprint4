@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
@@ -31,18 +32,16 @@ def category_posts(request, category_slug):
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(
-        Post.objects.select_related("author", "category"),
-        pk=post_id,
+    qs = Post.objects.select_related("author", "category").filter(
+        Q(author=request.user) |
+        Q(is_published=True, pub_date__lte=timezone.now())
     )
-    if not post.is_published and request.user != post.author:
-        raise Http404
+    post = get_object_or_404(qs, pk=post_id)
     return render(request, "blog/detail.html", {
         "post": post,
         "form": CommentForm(),
         "comments": post.comments.order_by("created_at"),
     })
-
 
 @login_required
 def create_post(request):
@@ -106,10 +105,7 @@ def edit_profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
     if form.is_valid():
         form.save()
-        return redirect(
-            "blog:profile",
-            username=request.user.username,
-        )
+        return redirect('blog:profile', username=request.user.username)
     return render(request, "blog/user.html", {"form": form})
 
 
