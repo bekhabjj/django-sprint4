@@ -117,6 +117,7 @@ class Comment(PublishedBaseModel):
         Post,
         on_delete=models.CASCADE,
         verbose_name="Пост",
+        related_name='comments'
     )
     author = models.ForeignKey(
         User,
