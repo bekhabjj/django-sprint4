@@ -4,10 +4,12 @@ from blog.models import Comment, Post
 
 User = get_user_model()
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ("text",)
+
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -16,6 +18,7 @@ class PostForm(forms.ModelForm):
         widgets = {
             "pub_date": forms.DateTimeInput(attrs={"type": "datetime-local"})
         }
+
 
 class ProfileForm(forms.ModelForm):
     class Meta:
