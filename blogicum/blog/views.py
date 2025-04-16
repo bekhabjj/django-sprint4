@@ -20,27 +20,40 @@ def category_posts(request, category_slug):
         Category.objects.filter(is_published=True),
         slug=category_slug,
     )
-    return render(request, "blog/category.html", {
-        "category": category,
-        "page_obj": posts_pagination(
-            request,
-            get_posts(category.posts.all())
-        ),
-    })
+    return render(
+        request,
+        "blog/category.html",
+        {
+            "category": category,
+            "page_obj": posts_pagination(
+                request,
+                get_posts(category.posts.all())
+            ),
+        }
+    )
 
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.author:
         post = get_object_or_404(
-            get_posts(Post.objects.all(), apply_filters=True, with_comments_count=False, use_select_related=False),
+            get_posts(
+                Post.objects.all(),
+                apply_filters=True,
+                with_comments_count=False,
+                use_select_related=False
+            ),
             pk=post_id
         )
-    return render(request, "blog/detail.html", {
-        "post": post,
-        "form": CommentForm(),
-        "comments": post.comments.all(),
-    })
+    return render(
+        request,
+        "blog/detail.html",
+        {
+            "post": post,
+            "form": CommentForm(),
+            "comments": post.comments.all(),
+        }
+    )
 
 
 @login_required
@@ -94,10 +107,14 @@ def profile(request, username=None):
         author.posts.all(),
         apply_filters=(request.user != author),
     )
-    return render(request, "blog/profile.html", {
-        "profile": author,
-        "page_obj": posts_pagination(request, posts),
-    })
+    return render(
+        request,
+        "blog/profile.html",
+        {
+            "profile": author,
+            "page_obj": posts_pagination(request, posts),
+        }
+    )
 
 
 @login_required
@@ -129,10 +146,11 @@ def edit_comment(request, post_id, comment_id):
     if form.is_valid():
         form.save()
         return redirect("blog:post_detail", post_id)
-    return render(request, "blog/comment.html", {
-        "form": form,
-        "comment": comment,
-    })
+    return render(
+        request,
+        "blog/comment.html",
+        {"form": form, "comment": comment},
+    )
 
 
 @login_required
