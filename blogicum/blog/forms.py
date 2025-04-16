@@ -1,48 +1,24 @@
 from django import forms
-from django.contrib.auth import get_user_model
-from blog.models import Comment, Post
 
-User = get_user_model()
+from .models import Post, User, Comment
 
 
-class CommentForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
     class Meta:
-        model = Comment
-        fields = ("text",)
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username')
 
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ("author",)
+        exclude = ('author',)
         widgets = {
-            "pub_date": forms.DateInput(attrs={"type": "date"})
+            'pub_date': forms.DateInput(attrs={'type': 'datetime-local'})
         }
 
 
-class ProfileForm(forms.ModelForm):
+class CommentForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ("first_name", "last_name", "username", "email")
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        if user is not None:
-            kwargs["instance"] = user
-        super().__init__(*args, **kwargs)
-
-
-class PasswordChangeForm(forms.Form):
-    password1 = forms.CharField(
-        label='New password', widget=forms.PasswordInput
-    )
-    password2 = forms.CharField(
-        label='Confirm new password', widget=forms.PasswordInput
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+        model = Comment
+        fields = ('text',)
