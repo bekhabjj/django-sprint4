@@ -14,7 +14,7 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ("author",)
+        fields = ["title", "text", "pub_date", "location", "category", "image"]
         widgets = {
             "pub_date": forms.DateTimeInput(attrs={"type": "datetime-local"})
         }
@@ -31,6 +31,7 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        if "user" in kwargs and kwargs["user"] is not None:
-            kwargs["instance"] = kwargs.pop("user")
-        super().__init__(*args, **kwargs)
+        user = kwargs.pop("user", None)
+        if user is not None:
+            kwargs["instance"] = user
+        super(ProfileForm, self).__init__(*args, **kwargs)
