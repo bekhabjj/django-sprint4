@@ -29,3 +29,14 @@ class ProfileForm(forms.ModelForm):
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "email": forms.EmailInput(attrs={"class": "form-control"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        if args and args[0] is not None and not isinstance(args[0], dict):
+            user_instance = args[0]
+            args = args[1:]
+            kwargs["instance"] = user_instance
+        else:
+            user = kwargs.pop("user", None)
+            if user is not None:
+                kwargs["instance"] = user
+        super().__init__(*args, **kwargs)
