@@ -31,7 +31,12 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        if user is not None:
-            kwargs["instance"] = user
+        if args and not isinstance(args[0], dict):
+            user_instance = args[0]
+            args = args[1:]
+            kwargs["instance"] = user_instance
+        else:
+            user = kwargs.pop("user", None)
+            if user is not None:
+                kwargs["instance"] = user
         super().__init__(*args, **kwargs)
