@@ -99,15 +99,15 @@ def profile(request, username=None):
 
 @login_required
 def edit_profile(request):
-    form = ProfileForm(
-        request.POST or None,
-        instance=request.user
-    )
-    if form.is_valid():
-        form.save()
-        return redirect('blog:profile', username=request.user.username)
-    return render(request, "blog/user.html", {"form": form})
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('blog:profile', username=request.user.username)
+    else:
+        form = ProfileForm(instance=request.user, user=request.user)
 
+    return render(request, "blog/user.html", {"form": form})
 
 @login_required
 def add_comment(request, post_id):
