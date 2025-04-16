@@ -4,7 +4,6 @@ from blog.models import Comment, Post
 
 User = get_user_model()
 
-
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -16,20 +15,31 @@ class PostForm(forms.ModelForm):
         model = Post
         exclude = ("author",)
         widgets = {
-            "pub_date": forms.DateTimeInput(attrs={"type": "datetime-local"})
+            "pub_date": forms.DateInput(attrs={"type": "date"})
         }
-
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email"]
-        labels = {
-            "first_name": "Имя",
-            "last_name": "Фамилия",
-            "email": "Email"
-        }
+        fields = ("first_name", "last_name", "username", "email")
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        if user is not None:
+            kwargs["instance"] = user
         super().__init__(*args, **kwargs)
-        self.fields['email'].required = True
+
+class PasswordChangeForm(forms.Form):
+    password1 = forms.CharField(
+        label='New password', widget=forms.PasswordInput
+    )
+    password2 = forms.CharField(
+        label='Confirm new password', widget=forms.PasswordInput
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
