@@ -31,6 +31,7 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        if user is not None:
+            kwargs["instance"] = user
         super().__init__(*args, **kwargs)
-        if not self.instance:
-            raise ValueError("Form must be initialized with a User instance")
