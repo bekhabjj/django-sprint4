@@ -122,7 +122,7 @@ def edit_profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
     if form.is_valid():
         form.save()
-        return redirect('blog:profile', username=request.user.username)
+        return redirect("blog:profile", username=request.user.username)
     return render(request, "blog/user.html", {"form": form})
 
 

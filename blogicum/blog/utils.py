@@ -26,4 +26,6 @@ def get_posts(
         )
     if with_comments_count:
         posts = posts.annotate(comment_count=Count('comments'))
+    if apply_default_ordering:
+        posts = posts.order_by(*Post._meta.ordering)
     return posts
