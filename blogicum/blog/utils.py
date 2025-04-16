@@ -11,10 +11,9 @@ def posts_pagination(request, queryset, per_page=10):
 
 def get_posts(
     posts=Post.objects.all(),
-    apply_filters: bool = True,
-    with_comments_count: bool = True,
-    use_select_related: bool = True,
-    apply_default_ordering: bool = True
+    apply_filters=True,
+    with_comments_count=True,
+    use_select_related=True,
 ):
     if use_select_related:
         posts = posts.select_related('author', 'location', 'category')
@@ -22,10 +21,9 @@ def get_posts(
         posts = posts.filter(
             is_published=True,
             pub_date__lt=timezone.now(),
-            category__is_published=True
+            category__is_published=True,
         )
     if with_comments_count:
         posts = posts.annotate(comment_count=Count('comments'))
-    if apply_default_ordering:
         posts = posts.order_by(*Post._meta.ordering)
     return posts
