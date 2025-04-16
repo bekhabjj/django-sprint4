@@ -1,37 +1,29 @@
 from django import forms
-from django.contrib.auth import get_user_model
-from blog.models import Comment, Post
 
-User = get_user_model()
+from blog.models import Comment, Post, User
 
 
 class CommentForm(forms.ModelForm):
+
     class Meta:
         model = Comment
-        fields = ("text",)
+        fields = ('text',)
 
 
 class PostForm(forms.ModelForm):
+
     class Meta:
         model = Post
-        fields = ["title", "text", "pub_date", "location", "category", "image"]
+        exclude = ('author',)
         widgets = {
-            "pub_date": forms.DateTimeInput(attrs={"type": "datetime-local"})
+            'pub_date': forms.DateTimeInput(
+                format='%Y-%m-%dT%H:%M', attrs={'type': 'datetime-local'}
+            )
         }
 
 
 class ProfileForm(forms.ModelForm):
+
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email"]
-        widgets = {
-            "first_name": forms.TextInput(attrs={"class": "form-control"}),
-            "last_name": forms.TextInput(attrs={"class": "form-control"}),
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        if user is not None:
-            kwargs["instance"] = user
-        super(ProfileForm, self).__init__(*args, **kwargs)
+        fields = ('username', 'first_name', 'last_name', 'email')
