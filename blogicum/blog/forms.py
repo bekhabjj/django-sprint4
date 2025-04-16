@@ -4,6 +4,7 @@ from blog.models import Comment, Post
 
 User = get_user_model()
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -18,6 +19,7 @@ class PostForm(forms.ModelForm):
             "pub_date": forms.DateInput(attrs={"type": "date"})
         }
 
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
@@ -28,6 +30,7 @@ class ProfileForm(forms.ModelForm):
         if user is not None:
             kwargs["instance"] = user
         super().__init__(*args, **kwargs)
+
 
 class PasswordChangeForm(forms.Form):
     password1 = forms.CharField(
