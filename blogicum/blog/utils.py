@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.utils import timezone
+
 from blog.models import Post
 
 
@@ -13,8 +14,8 @@ def get_posts(
     apply_filters: bool = True,
     with_comments_count: bool = True,
     use_select_related: bool = True,
+    apply_default_ordering: bool = True
 ):
-    posts = posts.order_by(*Post._meta.ordering)
     if use_select_related:
         posts = posts.select_related('author', 'location', 'category')
     if apply_filters:

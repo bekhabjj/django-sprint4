@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 from blog.constants import MAX_LENGTH, MAX_WORDS_LENGTH
 
@@ -117,7 +118,6 @@ class Comment(PublishedBaseModel):
         Post,
         on_delete=models.CASCADE,
         verbose_name="Пост",
-        related_name='comments'
     )
     author = models.ForeignKey(
         User,
@@ -130,7 +130,7 @@ class Comment(PublishedBaseModel):
         default_related_name = "comments"
         verbose_name = "комментарий"
         verbose_name_plural = "Комментарии"
-        ordering = ("created_at",)
+        ordering = ("-created_at",)
 
     def __str__(self):
         return f'Комментарий {self.text[:MAX_WORDS_LENGTH]} от {self.author}'

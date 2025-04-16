@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+
 from blog.forms import CommentForm, PostForm, ProfileForm
 from blog.models import Category, Comment, Post
 from blog.utils import get_posts, posts_pagination
@@ -31,8 +32,10 @@ def category_posts(request, category_slug):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.author:
-        published_posts = get_posts(Post.objects.all())
-        post = get_object_or_404(published_posts, pk=post_id)
+        post = get_object_or_404(
+            get_posts(Post.objects.all(), apply_filters=True, with_comments_count=False, use_select_related=False),
+            pk=post_id
+        )
     return render(request, "blog/detail.html", {
         "post": post,
         "form": CommentForm(),
@@ -88,7 +91,7 @@ def profile(request, username=None):
         username=username or request.user.username,
     )
     posts = get_posts(
-        author.posts.all().order_by(*Post._meta.ordering),
+        author.posts.all(),
         apply_filters=(request.user != author),
     )
     return render(request, "blog/profile.html", {
@@ -99,14 +102,10 @@ def profile(request, username=None):
 
 @login_required
 def edit_profile(request):
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, user=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:profile', username=request.user.username)
-    else:
-        form = ProfileForm(instance=request.user, user=request.user)
-
+    form = ProfileForm(request.POST or None, instance=request.user)
+    if form.is_valid():
+        form.save()
+        return redirect('blog:profile', username=request.user.username)
     return render(request, "blog/user.html", {"form": form})
 
 
