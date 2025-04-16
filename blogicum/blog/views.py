@@ -109,6 +109,7 @@ def edit_profile(request):
 
     return render(request, "blog/user.html", {"form": form})
 
+
 @login_required
 def add_comment(request, post_id):
     form = CommentForm(request.POST or None)
