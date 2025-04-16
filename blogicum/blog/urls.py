@@ -50,13 +50,13 @@ urlpatterns = [
     ),
     path('posts/', include(posts)),
     path(
-        'profile/<str:username>/',
-        views.profile,
-        name='profile'
-    ),
-    path(
         'profile/edit_profile/',
         views.edit_profile,
         name='edit_profile'
+    ),
+    path(
+        'profile/<str:username>/',
+        views.profile,
+        name='profile'
     ),
 ]
