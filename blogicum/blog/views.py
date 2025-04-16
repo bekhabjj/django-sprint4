@@ -121,7 +121,7 @@ def profile(request, username=None):
 def edit_profile(request):
     if request.method == "POST":
         form = ProfileForm(
-            request.POST, 
+            request.POST,
             instance=request.user
         )
         if form.is_valid():
@@ -129,7 +129,7 @@ def edit_profile(request):
             return redirect("blog:profile", username=request.user.username)
     else:
         form = ProfileForm(instance=request.user)
-    
+
     return render(request, "blog/user.html", {"form": form})
 
 
