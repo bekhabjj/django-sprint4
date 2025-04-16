@@ -119,10 +119,17 @@ def profile(request, username=None):
 
 @login_required
 def edit_profile(request):
-    form = ProfileForm(request.POST or None, user=request.user)
-    if form.is_valid():
-        form.save()
-        return redirect("blog:profile", username=request.user.username)
+    if request.method == "POST":
+        form = ProfileForm(
+            request.POST, 
+            instance=request.user
+        )
+        if form.is_valid():
+            form.save()
+            return redirect("blog:profile", username=request.user.username)
+    else:
+        form = ProfileForm(instance=request.user)
+    
     return render(request, "blog/user.html", {"form": form})
 
 
