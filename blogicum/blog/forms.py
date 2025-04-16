@@ -22,10 +22,15 @@ class PostForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = get_user_model()
+        model = User
         fields = ['first_name', 'last_name', 'email']
         labels = {
             'first_name': 'Имя',
             'last_name': 'Фамилия',
             'email': 'Электронная почта'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+            self.instance = kwargs['instance']
